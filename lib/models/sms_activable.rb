@@ -50,9 +50,9 @@ module Devise
       end
 
       # Send confirmation token by sms
-      def send_sms_token
-        if(self.phone?)
-          generate_sms_token! if self.generate_sms_token.nil?
+      def send_sms_token           
+        if(self.phone?)  
+          generate_sms_token! if self.sms_confirmation_token.nil?
           ::Devise.sms_sender.send_sms(self.phone, I18n.t(:"devise.sms_activations.sms_body", :sms_confirmation_token => self.sms_confirmation_token, :default => self.sms_confirmation_token))
         else
           self.errors.add(:sms_confirmation_token, :no_phone_associated)
@@ -71,12 +71,12 @@ module Devise
       # calculate if the confirm time has not expired for this user.
 
       def active?
-        super && !sms_confirmation_required? || confirmed_sms? || confirmation_sms_period_valid?
+        !sms_confirmation_required? || confirmed_sms? || confirmation_sms_period_valid?
       end
 
       # The message to be shown if the account is inactive.
       def inactive_message
-        !confirmed_sms? ? I18n.t(:"devise.sms_activations.unconfirmed_sms") : super
+        !confirmed_sms? ? :unconfirmed_sms : super
       end
 
       # If you don't want confirmation to be sent on create, neither a code
@@ -128,13 +128,13 @@ module Devise
 
         # Generates a new random token for confirmation, and stores the time
         # this token is being generated
-        def generate_sms_token
+        def generate_sms_token   
           self.sms_confirmed_at = nil
           self.sms_confirmation_token = self.class.sms_confirmation_token
           self.confirmation_sms_sent_at = Time.now.utc
         end
 
-        def generate_sms_token!
+        def generate_sms_token!     
           generate_sms_token && save(:validate => false)
         end
 
@@ -155,7 +155,10 @@ module Devise
           # Options must have the sms_confirmation_token
           def confirm_by_sms_token(sms_confirmation_token)
             sms_confirmable = find_or_initialize_with_error_by(:sms_confirmation_token, sms_confirmation_token)
-            sms_confirmable.confirm_sms! if sms_confirmable.persisted?
+            sms_confirmable.confirm_sms! if sms_confirmable.persisted?                  
+            if (sms_confirm_also_mail)
+               sms_confirmable.confirm! if sms_confirmable.persisted?  
+            end                                                       
             sms_confirmable
           end
 
@@ -174,7 +177,7 @@ module Devise
             generate_small_token(:sms_confirmation_token)
           end
 
-          Devise::Models.config(self, :sms_confirm_within, :sms_confirmation_keys)
+          Devise::Models.config(self, :sms_confirm_within, :sms_confirmation_keys, :sms_confirm_also_mail)
         end
     end
   end
