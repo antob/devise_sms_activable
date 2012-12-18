@@ -84,6 +84,11 @@ module Devise
       def skip_sms_confirmation!
         self.sms_confirmed_at = Time.now
       end
+                    
+      # Verifies whether an sms token (ie from sign in) is the user sms token.
+      def valid_sms_token?(token)
+         self.sms_confirmation_token == token
+      end
 
       protected
 
@@ -136,7 +141,8 @@ module Devise
 
         def generate_sms_token!     
           generate_sms_token && save(:validate => false)
-        end
+        end     
+        
 
         module ClassMethods
           # Attempt to find a user by it's email. If a record is found, send a new
