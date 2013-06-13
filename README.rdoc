@@ -17,9 +17,9 @@ Replace *Student* by your project name.
 Check the [MainSMS API for Ruby/Rails](http://mainsms.ru/home/integration_ruby).
 There are some useful links:
 
-* {github repo of mainsms_api gem}(https://github.com/evserykh/mainsms_api)
-* {your API keys(requires login!)}(http://mainsms.ru/office/api_account)
-* {MainSMS API docs}(http://mainsms.ru/home/integration)
+* {github repo of mainsms_api gem}[https://github.com/evserykh/mainsms_api]
+* {your API keys(requires login!)}[http://mainsms.ru/office/api_account]
+* {MainSMS API docs}[http://mainsms.ru/home/integration]
 
 == Russian language
 Я добавил русский язык, чтобы самому в будущем не заморчиваться на этот счет.
