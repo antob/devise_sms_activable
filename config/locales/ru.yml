@@ -1,0 +1,16 @@
+ru:
+  app_from: "Student"
+  errors:
+     messages:
+       no_phone_associated: "Не привязано ни одного телефона"
+       sms_already_confirmed: "Этот код уже был использован"
+       sms_token_invalid: "не был заблокирован"
+  devise:
+    sms_activations:
+      send_token: 'Вам отправлено SMS сообщение с кодом на телефон +7%{phone}.'
+      sms_token_invalid: 'Введенный код не верен!'
+      confirmed: 'Ваш аккаунт активирован. Теперь вы успешно вошли.'
+      sms_activation_required: 'Активация по SMS обязательна!'
+      sms_body: 'Введите этот код: %{sms_confirmation_token}.'
+      unconfirmed_sms: 'Ваш аккаунт необходимо подтвердить по SMS!'
+      

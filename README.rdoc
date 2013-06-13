@@ -1,5 +1,31 @@
 = devise_sms_activable
 
+== Additions by ikhrome
+
+Please, before using this gem, install `mainsms_api` gem:
+```
+gem 'mainsms_api'
+```
+
+=== From
+In `en.yml` you can find new line:
+```yaml
+app_from: "Student"
+```
+Replace **Student** by your project name.
+
+=== MainSMS
+Check the [MainSMS API for Ruby/Rails](http://mainsms.ru/home/integration_ruby).
+There are some useful links:
+
+* [github repo of mainsms_api gem](https://github.com/evserykh/mainsms_api)
+* [your API keys(requires login!)](http://mainsms.ru/office/api_account)
+* [MainSMS API docs](http://mainsms.ru/home/integration)
+
+== Russian language
+Я добавил русский язык, чтобы самому в будущем не заморчиваться на этот счет.
+Этот форк в основном я делал для себя, если нужно - допиливайте так, как вам надо.
+
 Devise Sms Activable is a snap-in for Devise that will make any resource activable via SMS.
 The user will receive an SMS with a token that can be entered on the site to activate the account.
 Ask the user his phone (and phone confirmation to double check) on registration and the token will be sended automagically.

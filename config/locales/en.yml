@@ -1,4 +1,5 @@
 en:
+  app_from: "Student"
   errors:
      messages:
        no_phone_associated: "No phone associated"
