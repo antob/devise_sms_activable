@@ -16,7 +16,7 @@ module Devise
     #     use this to let your user access some features of your application without
     #     confirming the account, but blocking it after a certain period (ie 7 days).
     #     By default confirm_within is 0 days, so the user must confirm before entering.
-    #     If you want to allow user to use parts of the site and block others override 
+    #     If you want to allow user to use parts of the site and block others override
     #     sms_confirmation_required? and check manually on selected pages using the
     #     require_sms_activated! helper or sms_confirmed? property on record
     #
@@ -50,10 +50,10 @@ module Devise
       end
 
       # Send confirmation token by sms
-      def send_sms_token           
-        if(self.phone?)  
+      def send_sms_token
+        if(self.cell_phone?)
           generate_sms_token! if self.sms_confirmation_token.nil?
-          ::Devise.sms_sender.send_sms(self.phone, I18n.t(:"devise.sms_activations.sms_body", :sms_confirmation_token => self.sms_confirmation_token, :default => self.sms_confirmation_token))
+          ::Devise.sms_sender.send_sms(self.cell_phone, I18n.t(:"devise.sms_activations.sms_body", :sms_confirmation_token => self.sms_confirmation_token, :default => self.sms_confirmation_token))
         else
           self.errors.add(:sms_confirmation_token, :no_phone_associated)
           false
@@ -84,7 +84,7 @@ module Devise
       def skip_sms_confirmation!
         self.sms_confirmed_at = Time.now
       end
-                    
+
       # Verifies whether an sms token (ie from sign in) is the user sms token.
       def valid_sms_token?(token)
          self.sms_confirmation_token == token
@@ -133,16 +133,16 @@ module Devise
 
         # Generates a new random token for confirmation, and stores the time
         # this token is being generated
-        def generate_sms_token   
+        def generate_sms_token
           self.sms_confirmed_at = nil
           self.sms_confirmation_token = self.class.sms_confirmation_token
           self.confirmation_sms_sent_at = Time.now.utc
         end
 
-        def generate_sms_token!     
+        def generate_sms_token!
           generate_sms_token && save(:validate => false)
-        end     
-        
+        end
+
 
         module ClassMethods
           # Attempt to find a user by it's email. If a record is found, send a new
@@ -161,10 +161,10 @@ module Devise
           # Options must have the sms_confirmation_token
           def confirm_by_sms_token(sms_confirmation_token)
             sms_confirmable = find_or_initialize_with_error_by(:sms_confirmation_token, sms_confirmation_token)
-            sms_confirmable.confirm_sms! if sms_confirmable.persisted?                  
+            sms_confirmable.confirm_sms! if sms_confirmable.persisted?
             if (sms_confirm_also_mail)
-               sms_confirmable.confirm! if sms_confirmable.persisted?  
-            end                                                       
+               sms_confirmable.confirm! if sms_confirmable.persisted?
+            end
             sms_confirmable
           end
 
