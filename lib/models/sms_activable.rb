@@ -1,5 +1,3 @@
-require "devise_sms_activable/hooks"
-
 module Devise
   module Models
     # SmsActivable is responsible to verify if an account is already confirmed to
@@ -34,6 +32,10 @@ module Devise
         after_create  :resend_sms_token, :if => :sms_confirmation_required?
       end
 
+      def self.required_fields(klass)
+        [:sms_confirmation_token, :sms_confirmed_at, :confirmation_sms_sent_at]
+      end
+
       # Confirm a user by setting it's sms_confirmed_at to actual time. If the user
       # is already confirmed, add en error to email field
       def confirm_sms!
@@ -65,13 +67,12 @@ module Devise
         unless_sms_confirmed { send_sms_token }
       end
 
-      # Overwrites active? from Devise::Models::Activatable for sms confirmation
+      # Overwrites active_for_authentication? from Devise::Models::Activatable for sms confirmation
       # by verifying whether a user is active to sign in or not. If the user
       # is already confirmed, it should never be blocked. Otherwise we need to
       # calculate if the confirm time has not expired for this user.
-
-      def active?
-        !sms_confirmation_required? || confirmed_sms? || confirmation_sms_period_valid?
+      def active_for_authentication?
+        super && (!sms_confirmation_required? || confirmed_sms? || confirmation_sms_period_valid?)
       end
 
       # The message to be shown if the account is inactive.
@@ -82,7 +83,7 @@ module Devise
       # If you don't want confirmation to be sent on create, neither a code
       # to be generated, call skip_sms_confirmation!
       def skip_sms_confirmation!
-        self.sms_confirmed_at = Time.now
+        self.sms_confirmed_at = Time.now.utc
       end
 
       # Verifies whether an sms token (ie from sign in) is the user sms token.
@@ -100,7 +101,7 @@ module Devise
         # Checks if the confirmation for the user is within the limit time.
         # We do this by calculating if the difference between today and the
         # confirmation sent date does not exceed the confirm in time configured.
-        # Confirm_in is a model configuration, must always be an integer value.
+        # sms_confirm_within is a model configuration, must always be an integer value.
         #
         # Example:
         #
@@ -126,7 +127,7 @@ module Devise
           unless confirmed_sms?
             yield
           else
-            self.errors.add(:sms_confirmation_token, :sms_already_confirmed)
+            self.errors.add(:cell_phone, :sms_already_confirmed)
             false
           end
         end
@@ -162,15 +163,11 @@ module Devise
           def confirm_by_sms_token(sms_confirmation_token)
             sms_confirmable = find_or_initialize_with_error_by(:sms_confirmation_token, sms_confirmation_token)
             sms_confirmable.confirm_sms! if sms_confirmable.persisted?
-            if (sms_confirm_also_mail)
-               sms_confirmable.confirm! if sms_confirmable.persisted?
-            end
             sms_confirmable
           end
 
           # Generates a small token that can be used conveniently on SMS's.
           # The token is 5 chars long and uppercased.
-
           def generate_small_token(column)
             loop do
               token = Devise.friendly_token[0,5].upcase
@@ -183,7 +180,7 @@ module Devise
             generate_small_token(:sms_confirmation_token)
           end
 
-          Devise::Models.config(self, :sms_confirm_within, :sms_confirmation_keys, :sms_confirm_also_mail)
+          Devise::Models.config(self, :sms_confirm_within, :sms_confirmation_keys)
         end
     end
   end

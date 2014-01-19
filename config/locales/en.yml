@@ -3,7 +3,7 @@ en:
   errors:
      messages:
        no_phone_associated: "No phone associated"
-       sms_already_confirmed: "This token has been already used"
+       sms_already_confirmed: "This account is already confirmed"
        sms_token_invalid: "was not locked"
   devise:
     sms_activations:
@@ -13,4 +13,4 @@ en:
       sms_activation_required: 'SMS Activation is required'
       sms_body: 'Your Activation Token is %{sms_confirmation_token}.'
       unconfirmed_sms: 'Your account need to be activated with an SMS token'
-      
+

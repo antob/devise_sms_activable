@@ -1,11 +1,8 @@
 module DeviseInvitable
   class Engine < ::Rails::Engine
 
-    ActiveSupport.on_load(:action_controller) { include DeviseSmsActivable::Controllers::UrlHelpers }
-    ActiveSupport.on_load(:action_view)       { include DeviseSmsActivable::Controllers::UrlHelpers }
-
-    config.after_initialize do
-    
+    ActiveSupport.on_load(:action_controller) do
+      include DeviseSmsActivable::Controllers::Helpers
     end
 
   end
