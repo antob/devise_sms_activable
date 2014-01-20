@@ -160,9 +160,17 @@ module Devise
           # If no user is found, returns a new user with an error.
           # If the user is already confirmed, create an error for the user
           # Options must have the sms_confirmation_token
-          def confirm_by_sms_token(sms_confirmation_token)
-            sms_confirmable = find_or_initialize_with_error_by(:sms_confirmation_token, sms_confirmation_token)
-            sms_confirmable.confirm_sms! if sms_confirmable.persisted?
+          def confirm_by_sms_token(sms_token)
+            sms_confirmable = find_first_by_auth_conditions(:sms_confirmation_token => sms_token)
+
+            if sms_confirmable
+              sms_confirmable.confirm_sms!
+            else
+              sms_confirmable = new
+              sms_confirmable.errors.add(:sms_token, :blank) if sms_token.blank?
+              sms_confirmable.errors.add(:sms_token, :sms_token_invalid) if sms_token.present?
+            end
+
             sms_confirmable
           end
 

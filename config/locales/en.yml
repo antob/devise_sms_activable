@@ -4,7 +4,7 @@ en:
      messages:
        no_phone_associated: "No phone associated"
        sms_already_confirmed: "This account is already confirmed"
-       sms_token_invalid: "was not locked"
+       sms_token_invalid: "invalid SMS token"
   devise:
     sms_activations:
       send_token: 'An activation token was sent by SMS to %{phone}.'

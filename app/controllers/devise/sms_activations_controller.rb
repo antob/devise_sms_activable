@@ -30,7 +30,6 @@ class Devise::SmsActivationsController < DeviseController
       set_flash_message :notice, :confirmed
       sign_in_and_redirect(resource_name, resource)
     else
-      set_flash_message :error, :sms_token_invalid
       render :insert
     end
   end
